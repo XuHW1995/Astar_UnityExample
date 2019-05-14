@@ -8,8 +8,13 @@ public class MapCreater : MonoBehaviour
     public int mapLength = 10;
     public GameObject rootGrid;
 
-    public GameObject barrier;
+    public GameObject barrierPrefab;
     public int barrierCount = 0;
+
+    //抽象地图数据
+    private MapInfo mapInfo;
+    //实体节点信息
+    private List<MapGridNode> mapGridNodeList = new List<MapGridNode>();
 
     void Start()
     {
@@ -20,9 +25,10 @@ public class MapCreater : MonoBehaviour
     {
         CreatMap();
         RandomCreatBarrier();
-        //SetMapInfo();
+        SetMapInfo();
     }
 
+    //生成地图
     void CreatMap()
     {
         for(int x = 0; x < mapLength; x++)
@@ -33,10 +39,14 @@ public class MapCreater : MonoBehaviour
                 mapGrid.transform.position = new Vector3(x,0,y);
                 mapGrid.name = x + "_" + y;
                 mapGrid.transform.SetParent(this.transform);
+
+                FlatNode mapGridNode = new FlatNode(x, y, mapGrid.transform.position, mapGrid);
+                mapGridNodeList.Add(mapGridNode);
             }
         }
     }
 
+    //随机生成障碍物
     void RandomCreatBarrier()
     {
         if (barrierCount > this.transform.childCount)
@@ -49,31 +59,25 @@ public class MapCreater : MonoBehaviour
         while (indexList.Count < barrierCount)
         {
             //range函数左闭，右开
-            int index = Random.Range(0, this.transform.childCount);
+            int index = Random.Range(0, mapGridNodeList.Count);
             if (!indexList.Contains(index))
             {
                 indexList.Add(index);
-                GameObject barrierGrid = Instantiate(barrier);
-                barrierGrid.transform.SetParent(this.transform.GetChild(index));
+                GameObject barrierGrid = Instantiate(barrierPrefab);
+                MapGridNode randomNode = mapGridNodeList[index];
+                barrierGrid.transform.SetParent(randomNode.gameObject.transform);
                 barrierGrid.transform.position = barrierGrid.transform.parent.position;
+                
+                //障碍物节点替换原平地节点
+                BarrierNode barrierNode = new BarrierNode(randomNode.coordx, randomNode.coordy, randomNode.pos, randomNode.gameObject, barrierGrid);
+                mapGridNodeList[index] = barrierNode;
             }
         }
     }
 
+    //设置地图信息
     void SetMapInfo()
     {
-        for (int x = 0; x < mapLength; x++)
-        {
-            for (int y = 0; y < mapWith; y++)
-            {
-
-            }
-        }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        mapInfo = new MapInfo(mapWith, mapLength, mapGridNodeList);   
     }
 }

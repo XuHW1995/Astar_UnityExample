@@ -193,8 +193,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: -6.3384464e+29, y: 1.7592186e+13, z: -1.7014118e+38,
-    w: 2.5243547e-29}
+  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
@@ -289,7 +288,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 5.43, y: 18.9, z: 4.46}
+  m_LocalPosition: {x: 4.52, y: 18.9, z: 4.03}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -407,5 +406,6 @@ MonoBehaviour:
   mapWith: 10
   mapLength: 10
   rootGrid: {fileID: 168074, guid: 66c26455c3d3555478dfb1ee0e4b4e74, type: 3}
-  barrier: {fileID: 7181502163470971398, guid: 8fe8f399925470b44abe51c0b0e18ee7, type: 3}
-  barrierCount: 100
+  barrierPrefab: {fileID: 7181502163470971398, guid: 8fe8f399925470b44abe51c0b0e18ee7,
+    type: 3}
+  barrierCount: 5
