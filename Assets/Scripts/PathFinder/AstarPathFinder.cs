@@ -4,22 +4,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public delegate void AstarResult(List<AstarNode> findResult);
-
 public class AstarPathFinder
 {
-    public PathFindNode beginNode { get; set; }
-    public PathFindNode endNode { get; set; }
+    public AstarNode beginNode { get; set; }
+    public AstarNode endNode { get; set; }
+    public MapInfo findMapInfo { get; set; }
     public AstarResult findResultCallback;
+
+    public List<AstarNode> targetMap;
     public List<AstarNode> foundPath { get; set; }
 
-    //路径查找完成
-    private bool m_findComplete = false;
-
-    public AstarPathFinder(AstarNode begin, AstarNode end, AstarResult callback)
+    public AstarPathFinder(MapGridNode begin, MapGridNode end, MapInfo mapInfo, List<AstarNode>pathFindNodeList, AstarResult callback)
     {
-        beginNode = begin;
-        endNode = end;
+        beginNode = (AstarNode)begin.pathFindNode;
+        endNode = (AstarNode)end.pathFindNode;
+        findMapInfo = mapInfo;
+        targetMap = pathFindNodeList;
         findResultCallback = callback;
     }
 
@@ -37,20 +37,12 @@ public class AstarPathFinder
         {
             //每次取第一个进行检查
             AstarNode currentNode = openList[0];
-
-            //如果第一个就是终点，那么路径搜索完毕
-            if (currentNode.Equals(endNode))
-            {   
-                //TODO 从当前节点回溯，获取路径
-                //foundPath = RetracePath(beginNode, currentNode);
-                break;
-            }
-
+            //遍历待检查列表，选取F最小的点
             for (int i = 0; i < openList.Count; i++)
             {
                 AstarNode checkNode = openList[i];
 
-                if (checkNode.f < currentNode.f || (checkNode.f == currentNode.f && checkNode.h < currentNode.h))
+                if (checkNode.F < currentNode.F|| (checkNode.F == currentNode.F && checkNode.H < currentNode.H))
                 {
                     if (!currentNode.Equals(checkNode))
                     {
@@ -58,16 +50,121 @@ public class AstarPathFinder
                     }
                 }
             }
-
             openList.Remove(currentNode);
             closedList.Add(currentNode);
 
+            //如果当前检测点是终点，那么路径搜索完毕
+            if (currentNode.Equals(endNode))
+            {
+                foundPath = RecallPath(beginNode, currentNode);
+                break;
+            }
+
+            //检测当前节点的相邻节点
+            //获取当前检测节点的相邻节点（剔除不可行走节点）
+            List<AstarNode> currentNodeNeighbors = GetNeighborNodes(currentNode);
+            foreach (AstarNode neighborNode in currentNodeNeighbors)
+            {
+                //已检测过的去除
+                if (!closedList.Contains(neighborNode))
+                {
+                    //首先把未加入open的全加入
+                    if (!openList.Contains(neighborNode))
+                    {
+                        neighborNode.G = GetDistance(currentNode, neighborNode);
+                        neighborNode.H = GetDistance(neighborNode, endNode);
+                        neighborNode.parentNode = currentNode;
+                        openList.Add(neighborNode);
+                    }
+                    else//已加入的，计算新G和原G的大小
+                    {
+                        float newG = currentNode.G + GetDistance(currentNode, neighborNode);
+                        if (newG < neighborNode.G)
+                        {
+                            neighborNode.G = newG;
+                            neighborNode.H = GetDistance(neighborNode, endNode);
+                            neighborNode.parentNode = currentNode;
+                        }
+                    }               
+                }
+            }
         }
         //搜索完毕
         CompleteHandler();
     }
 
-    private void CompleteHandler()
+    //从检测的终点，回溯到起点，构成寻路结果
+    List<AstarNode> RecallPath(AstarNode beginNode, AstarNode currentNode)
+    {
+        List<AstarNode> foundPath = new List<AstarNode>();
+        AstarNode midNode = currentNode;
+        while (!midNode.Equals(beginNode))
+        {
+            foundPath.Add(midNode);
+            //midNode = currentNode.parentNode;
+            midNode = midNode.parentNode;
+        }
+
+        foundPath.Reverse();
+        return foundPath;
+    }
+    
+    //获取某点的相邻格点
+    List<AstarNode> GetNeighborNodes(AstarNode targetNode)
+    {
+        List<AstarNode> neighborNodes = new List<AstarNode>();
+        for (int x = -1; x <= 1; x++)
+        {
+            for (int y = -1; y <= 1; y++)
+            {
+                //TODO 根据移动类型取相邻格点
+                if (findMapInfo.moveType == MoveType.four &&  Math.Abs(x) != Math.Abs(y))
+                {
+                    AstarNode neighborNode = GetNeighborNode(targetNode.mapGridNode.coordx + x, targetNode.mapGridNode.coordy + y);
+                    if (null != neighborNode && neighborNode.mapGridNode.canWalk)
+                    {
+                        neighborNodes.Add(neighborNode);
+                    }
+                }
+
+                if (findMapInfo.moveType == MoveType.eight)
+                {
+                    AstarNode neighborNode = GetNeighborNode(targetNode.mapGridNode.coordx + x, targetNode.mapGridNode.coordy + y);
+                    if (null != neighborNode && neighborNode.mapGridNode.canWalk)
+                    {
+                        neighborNodes.Add(neighborNode);
+                    }
+                }
+            }
+        }
+        return neighborNodes;
+    }
+
+    AstarNode GetNeighborNode(int coordx, int coordy)
+    {
+        AstarNode lookForNode = null;
+        if (coordx <= findMapInfo.mapLength || coordx >= 0)
+        {
+            if (coordy <= findMapInfo.mapWith || coordy >= 0)
+            {
+                lookForNode = findMapInfo.GetNodeByCoord(coordx, coordy).pathFindNode;
+            }
+        }
+
+        return lookForNode;
+    }
+
+
+    //Manhattan Distance
+    float GetDistance(AstarNode firstNode, AstarNode lastNode)
+    {
+        //TODO get G or h
+        int distX = Math.Abs(firstNode.mapGridNode.coordx - lastNode.mapGridNode.coordx);
+        int distY = Math.Abs(firstNode.mapGridNode.coordy - lastNode.mapGridNode.coordy);
+
+        return 14 * distX + 10 * distY;
+    }
+    void CompleteHandler()
     {
         findResultCallback(foundPath);
     }

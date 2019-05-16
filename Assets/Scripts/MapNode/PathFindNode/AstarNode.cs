@@ -1,12 +1,12 @@
 ﻿public class AstarNode : PathFindNode
 {
-    public float h;
-    public float g;
-    public float f
+    public float H;
+    public float G;
+    public float F
     {
         get
         {
-            return g + h;
+            return G + H;
         }
     }
 
