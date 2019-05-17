@@ -139,22 +139,20 @@ public class AstarPathFinder
         }
         return neighborNodes;
     }
-
+    //根据坐标获取相邻节点
     AstarNode GetNeighborNode(int coordx, int coordy)
     {
-        AstarNode lookForNode = null;
-        if (coordx <= findMapInfo.mapLength || coordx >= 0)
+        MapGridNode lookForNode = null;
+
+        lookForNode = findMapInfo.GetNodeByCoord(coordx, coordy);
+
+        if (null != lookForNode)
         {
-            if (coordy <= findMapInfo.mapWith || coordy >= 0)
-            {
-                lookForNode = findMapInfo.GetNodeByCoord(coordx, coordy).pathFindNode;
-            }
+            return lookForNode.pathFindNode;
         }
 
-        return lookForNode;
+        return null;
     }
-
-
     //Manhattan Distance
     float GetDistance(AstarNode firstNode, AstarNode lastNode)
     {

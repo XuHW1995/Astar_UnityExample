@@ -10,6 +10,6 @@
         }
     }
 
-    public AstarNode parentNode;
+    public AstarNode parentNode; 
 }
 

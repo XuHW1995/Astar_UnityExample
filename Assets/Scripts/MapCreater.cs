@@ -43,6 +43,7 @@ public class MapCreater : MonoBehaviour
         {
             if (Input.GetMouseButtonDown(0))
             {
+                mapInfo.CleanShowPath();
                 RaycastHit hitInfo;
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 if (Physics.Raycast(ray, out hitInfo, 100))
@@ -65,7 +66,6 @@ public class MapCreater : MonoBehaviour
 
     void FindComplete(List<AstarNode> foundPath)
     {
-
         foreach(AstarNode pathFindNode in foundPath)
         {
             FlatNode flatNode = (FlatNode)pathFindNode.mapGridNode;

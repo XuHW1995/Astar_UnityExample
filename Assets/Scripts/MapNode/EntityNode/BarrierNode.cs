@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class BarrierNode: MapGridNode
+public class BarrierNode : MapGridNode
 {
     //障碍物
     public GameObject barrierObj { get; }

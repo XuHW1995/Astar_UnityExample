@@ -22,6 +22,7 @@ public class MapInfo
     public List<MapGridNode> mapGridNodeList = new List<MapGridNode>();
     //索引表
     private MapGridNode[,] mapGridCoordIndexArray;
+
     private Dictionary<string, MapGridNode> name2Node = new Dictionary<string, MapGridNode>();
 
     public int nodeCount{  get { return mapGridNodeList.Count; } }
@@ -65,9 +66,9 @@ public class MapInfo
     }
     public MapGridNode GetNodeByCoord(int coordx,int coordy)
     {
-        if (coordx <= mapLength
+        if (coordx < mapLength
             && coordx >= 0
-            && coordy <= mapWith
+            && coordy < mapWith
             && coordy >= 0)
         {
             return mapGridCoordIndexArray[coordx, coordy];
@@ -78,6 +79,21 @@ public class MapInfo
     public MapGridNode GetNodeByName(string name)
     {
         return name2Node[name];
+    }
+
+    public void CleanShowPath()
+    {
+        foreach(var node in mapGridNodeList)
+        {
+            if (node.GetType() == typeof(FlatNode))
+            {
+                FlatNode thisNode = node as FlatNode;
+                if (thisNode.isShowPath)
+                {
+                    thisNode.isShowPath = false;
+                }
+            }
+        }
     }
 }
 

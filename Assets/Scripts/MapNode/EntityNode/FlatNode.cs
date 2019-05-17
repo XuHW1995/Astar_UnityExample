@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class FlatNode: MapGridNode
+public class FlatNode : MapGridNode
 {
     private bool m_showPath;
     private Color m_originalColor;
@@ -10,12 +10,6 @@ public class FlatNode: MapGridNode
     {
         get
         {
-            if (null == m_meshRenderer)
-            {
-                Debug.LogWarning(gameObject.name + ": MapNode don't have material,can't show path!");
-            }
-
-            m_meshRenderer.material.color = m_originalColor;
             return m_showPath;
         }
         set
@@ -26,7 +20,14 @@ public class FlatNode: MapGridNode
             }
 
             m_showPath = value;
-            m_meshRenderer.material.color = Color.red;
+            if (m_showPath == true)
+            {
+                m_meshRenderer.material.color = Color.red;
+            }
+            else
+            {
+                m_meshRenderer.material.color = Color.white;
+            }
         }
     }
 
