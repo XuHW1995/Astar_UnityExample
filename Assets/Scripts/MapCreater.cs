@@ -6,8 +6,8 @@ using System;
 public class MapCreater : MonoBehaviour
 {
     #region 地图生成参数
-    public int mapWith = 10;
     public int mapLength = 10;
+    public int mapWith = 10;  
     public int barrierCount = 0;
     public GameObject rootGrid;
     public GameObject barrierPrefab;
@@ -62,7 +62,7 @@ public class MapCreater : MonoBehaviour
     }
     void CreatMap()
     {
-        mapInfo.SetMapData(mapWith, mapLength, moveType);
+        mapInfo.SetMapData(mapLength, mapWith, moveType);
         for(int x = 0; x < mapLength; x++)
         {
             for (int y = 0; y < mapWith; y++)

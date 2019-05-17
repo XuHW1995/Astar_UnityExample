@@ -93,7 +93,7 @@ public class AstarPathFinder
     //根据地图数据，生成寻路信息
     private AstarNode[,] CreatPathFindData(MapInfo mapInfo)
     {
-        AstarNode[,] targetMapPathFindData = new AstarNode[mapInfo.mapLength + 1, mapInfo.mapWith + 1];
+        AstarNode[,] targetMapPathFindData = new AstarNode[mapInfo.mapLength, mapInfo.mapWith];
 
         for(int i = 0; i < mapInfo.nodeCount; i++)
         {

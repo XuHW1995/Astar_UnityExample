@@ -446,9 +446,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf46f86b7d2133340b23d04a32c40c85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mapWith: 100
-  mapLength: 100
-  barrierCount: 2000
+  mapWith: 10
+  mapLength: 10
+  barrierCount: 0
   rootGrid: {fileID: 168074, guid: 66c26455c3d3555478dfb1ee0e4b4e74, type: 3}
   barrierPrefab: {fileID: 7181502163470971398, guid: 8fe8f399925470b44abe51c0b0e18ee7,
     type: 3}

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 public enum MoveType
 {
@@ -11,19 +12,19 @@ public class MapInfo
     //索引表
     private MapGridNode[,] mapGridCoordIndexArray;
 
-    public int mapWith { get; set; }
     public int mapLength { get; set; }
+    public int mapWith { get; set; }
     public MoveType moveType = MoveType.four;
     //实体节点列表
     public List<MapGridNode> mapGridNodeList = new List<MapGridNode>();
     public int nodeCount { get { return mapGridNodeList.Count; } }
 
-    public void SetMapData(int maxWith, int maxlength, MoveType type)
+    public void SetMapData(int maxlength, int maxWith, MoveType type)
     {
-        mapWith = maxWith;
         mapLength = maxlength;
+        mapWith = maxWith;  
         moveType = type;
-        mapGridCoordIndexArray = new MapGridNode[maxWith + 1, maxlength + 1];
+        mapGridCoordIndexArray = new MapGridNode[maxlength, maxWith];
     }
     public void AddNode(int x, int y, MapGridNode node)
     {  
