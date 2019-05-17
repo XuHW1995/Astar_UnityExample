@@ -5,17 +5,22 @@ using System;
 
 public class MapCreater : MonoBehaviour
 {
+    #region 地图生成参数
     public int mapWith = 10;
     public int mapLength = 10;
     public int barrierCount = 0;
     public GameObject rootGrid;
     public GameObject barrierPrefab;
+    public MoveType moveType = MoveType.four;
+    #endregion
+
     //地图数据
     private MapInfo mapInfo = new MapInfo();
-    private FlatNode beginNode = null;
 
-    private bool initMap = false;
+    public FlatNode beginNode { get; set; } = null;
+    public bool initMap { get; set; } = false;
 
+    //Singleton
     private static MapCreater instance = null;
     public static MapCreater GetInstance()
     {
@@ -25,6 +30,14 @@ public class MapCreater : MonoBehaviour
         }
 
         return instance;
+    }
+    public MapInfo GetMapInfo()
+    {
+        if (initMap)
+        {
+            return mapInfo;
+        }
+        return null;
     }
 
     void Awake()
@@ -37,45 +50,14 @@ public class MapCreater : MonoBehaviour
         InitCameraPos();
     }
 
-    private void Update()
-    {
-        if (initMap)
-        {
-            if (Input.GetMouseButtonDown(0))
-            {
-                mapInfo.CleanShowPath();
-                RaycastHit hitInfo;
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                if (Physics.Raycast(ray, out hitInfo, 100))
-                {
-                    if (hitInfo.transform.name != "barrier(Clone)")
-                    {
-                        MapGridNode end = mapInfo.GetNodeByName(hitInfo.transform.name);
-                        PathFindMgr.RequestPathFind(beginNode, end, mapInfo, FindComplete);
-                        Debug.Log("终点是：" + hitInfo.transform.name);
-                    }
-                }
-            }
-        }
-    }
-
     void InitCameraPos()
     {
         Camera.main.transform.position = mapInfo.GetNodeByCoord((int)Mathf.Floor(mapLength / 2), (int)Mathf.Floor(mapWith / 2)).pos + new Vector3(0,100,0);
     }
-
-    void FindComplete(List<AstarNode> foundPath)
-    {
-        foreach(AstarNode pathFindNode in foundPath)
-        {
-            FlatNode flatNode = (FlatNode)pathFindNode.mapGridNode;
-            flatNode.isShowPath = true;
-        }
-    }
-
     //初始化地图信息
     void InitMapInfo()
     {
+
         CreatMap();
         RandomCreatBarrierAndBeginNode();
 
@@ -85,7 +67,7 @@ public class MapCreater : MonoBehaviour
     //生成地图
     void CreatMap()
     {
-        mapInfo.SetMapSize(mapWith, mapLength);
+        mapInfo.SetMapData(mapWith, mapLength, moveType);
         for(int x = 0; x < mapLength; x++)
         {
             for (int y = 0; y < mapWith; y++)
@@ -135,7 +117,7 @@ public class MapCreater : MonoBehaviour
             if (!barrierIndexList.Contains(index))
             {
                 beginNode = mapInfo.GetNodeByIndex(index) as FlatNode;
-                beginNode.isShowPath = true;
+                beginNode.isBegin = true;
             }
         }
     }

@@ -5,6 +5,7 @@ public class FlatNode : MapGridNode
     private bool m_showPath;
     private Color m_originalColor;
     private MeshRenderer m_meshRenderer;
+    private bool m_isBegin;
 
     public bool isShowPath
     {
@@ -31,6 +32,14 @@ public class FlatNode : MapGridNode
         }
     }
 
+    public bool isBegin
+    {
+        set
+        {
+            m_meshRenderer.material.color = Color.green;
+            m_isBegin = value;
+        }
+    }
     public FlatNode(int x, int y, Vector3 pos, GameObject gridObj)
         : base(x, y, pos, gridObj)
     {

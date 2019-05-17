@@ -17,9 +17,7 @@ public class MapGridNode
     public Vector3 pos { get; }
     public GameObject gameObject { get; }
     public MapNodeType type { get; set; }
-    //实体节点里包含了寻路节点
-    public AstarNode pathFindNode { get; set; } = new AstarNode(); 
-
+    
     public MapGridNode(int x, int y, Vector3 pos, GameObject obj)
     {
         coordx = x;

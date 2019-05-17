@@ -1,25 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 public class AstarPathFinder
 {
-    public AstarNode beginNode { get; set; }
-    public AstarNode endNode { get; set; }
-    public MapInfo findMapInfo { get; set; }
-    public AstarResult findResultCallback;
+    private AstarNode beginNode;
+    private AstarNode endNode;
+    private MapInfo findMapInfo;
+    private AstarResult findResultCallback;
+    //目标地图的寻路信息
+    private AstarNode[,] targetMapPathFindData;
+    //寻路结果信息
+    private List<AstarNode> foundPath = new List<AstarNode>(); 
 
-    public List<AstarNode> targetMap;
-    public List<AstarNode> foundPath { get; set; }
-
-    public AstarPathFinder(MapGridNode begin, MapGridNode end, MapInfo mapInfo, List<AstarNode>pathFindNodeList, AstarResult callback)
+    public AstarPathFinder(MapGridNode begin, MapGridNode end, MapInfo mapInfo, AstarResult callback)
     {
-        beginNode = (AstarNode)begin.pathFindNode;
-        endNode = (AstarNode)end.pathFindNode;
         findMapInfo = mapInfo;
-        targetMap = pathFindNodeList;
+        targetMapPathFindData = CreatPathFindData(mapInfo);
+        beginNode = targetMapPathFindData[begin.coordx, begin.coordy];
+        endNode = targetMapPathFindData[end.coordx, end.coordy];
         findResultCallback = callback;
     }
 
@@ -93,24 +91,36 @@ public class AstarPathFinder
         CompleteHandler();
     }
 
+    //
+    private AstarNode[,] CreatPathFindData(MapInfo mapInfo)
+    {
+        AstarNode[,] targetMapPathFindData = new AstarNode[mapInfo.mapLength + 1, mapInfo.mapWith + 1];
+
+        for(int i = 0; i < mapInfo.nodeCount; i++)
+        {
+            MapGridNode thisNode = mapInfo.GetNodeByIndex(i);
+            targetMapPathFindData[thisNode.coordx, thisNode.coordy] = new AstarNode(thisNode.coordx, thisNode.coordy);
+        }
+
+        return targetMapPathFindData;
+    }
+
     //从检测的终点，回溯到起点，构成寻路结果
-    List<AstarNode> RecallPath(AstarNode beginNode, AstarNode currentNode)
+    private List<AstarNode> RecallPath(AstarNode beginNode, AstarNode currentNode)
     {
         List<AstarNode> foundPath = new List<AstarNode>();
         AstarNode midNode = currentNode;
         while (!midNode.Equals(beginNode))
         {
             foundPath.Add(midNode);
-            //midNode = currentNode.parentNode;
             midNode = midNode.parentNode;
         }
 
         foundPath.Reverse();
         return foundPath;
     }
-    
     //获取某点的相邻格点
-    List<AstarNode> GetNeighborNodes(AstarNode targetNode)
+    private List<AstarNode> GetNeighborNodes(AstarNode targetNode)
     {
         List<AstarNode> neighborNodes = new List<AstarNode>();
         for (int x = -1; x <= 1; x++)
@@ -120,8 +130,8 @@ public class AstarPathFinder
                 //TODO 根据移动类型取相邻格点
                 if (findMapInfo.moveType == MoveType.four &&  Math.Abs(x) != Math.Abs(y))
                 {
-                    AstarNode neighborNode = GetNeighborNode(targetNode.mapGridNode.coordx + x, targetNode.mapGridNode.coordy + y);
-                    if (null != neighborNode && neighborNode.mapGridNode.canWalk)
+                    AstarNode neighborNode = GetNeighborNode(targetNode.coordx + x, targetNode.coordy + y);
+                    if (null != neighborNode && findMapInfo.GetNodeByCoord(neighborNode.coordx, neighborNode.coordy).canWalk)
                     {
                         neighborNodes.Add(neighborNode);
                     }
@@ -129,8 +139,8 @@ public class AstarPathFinder
 
                 if (findMapInfo.moveType == MoveType.eight)
                 {
-                    AstarNode neighborNode = GetNeighborNode(targetNode.mapGridNode.coordx + x, targetNode.mapGridNode.coordy + y);
-                    if (null != neighborNode && neighborNode.mapGridNode.canWalk)
+                    AstarNode neighborNode = GetNeighborNode(targetNode.coordx + x, targetNode.coordy + y);
+                    if (null != neighborNode && findMapInfo.GetNodeByCoord(neighborNode.coordx, neighborNode.coordy).canWalk)
                     {
                         neighborNodes.Add(neighborNode);
                     }
@@ -140,30 +150,33 @@ public class AstarPathFinder
         return neighborNodes;
     }
     //根据坐标获取相邻节点
-    AstarNode GetNeighborNode(int coordx, int coordy)
+    private AstarNode GetNeighborNode(int coordx, int coordy)
     {
-        MapGridNode lookForNode = null;
-
-        lookForNode = findMapInfo.GetNodeByCoord(coordx, coordy);
-
-        if (null != lookForNode)
+        if (coordx < findMapInfo.mapLength
+            && coordx >= 0
+            && coordy < findMapInfo.mapWith
+            && coordy >= 0)
         {
-            return lookForNode.pathFindNode;
+            AstarNode lookForNode = null;
+            lookForNode = targetMapPathFindData[coordx, coordy];
+            if (null != lookForNode)
+            {
+                return lookForNode;
+            }
         }
-
         return null;
     }
     //Manhattan Distance
-    float GetDistance(AstarNode firstNode, AstarNode lastNode)
+    private float GetDistance(AstarNode firstNode, AstarNode lastNode)
     {
         //TODO get G or h
-        int distX = Math.Abs(firstNode.mapGridNode.coordx - lastNode.mapGridNode.coordx);
-        int distY = Math.Abs(firstNode.mapGridNode.coordy - lastNode.mapGridNode.coordy);
+        int distX = Math.Abs(firstNode.coordx - lastNode.coordx);
+        int distY = Math.Abs(firstNode.coordy - lastNode.coordy);
 
         //return 14 * distX + 10 * distY;
         return  distX + distY;
     }
-    void CompleteHandler()
+    private void CompleteHandler()
     {
         findResultCallback(foundPath);
     }
