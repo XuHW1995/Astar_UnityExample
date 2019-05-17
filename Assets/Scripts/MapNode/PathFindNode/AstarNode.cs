@@ -1,8 +1,5 @@
-﻿public class AstarNode
+﻿public class AstarNode: NodeBase
 {
-    public int coordx { get; }
-    public int coordy { get; }
-
     public float H;
     public float G;
     public float F

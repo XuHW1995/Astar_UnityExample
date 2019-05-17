@@ -8,11 +8,8 @@ public enum MapNodeType
     max,
 }
 
-public class MapGridNode
+public class MapGridNode: NodeBase
 {
-    public int coordx { get; }
-    public int coordy { get; }
-
     public bool canWalk { get; set; }
     public Vector3 pos { get; }
     public GameObject gameObject { get; }

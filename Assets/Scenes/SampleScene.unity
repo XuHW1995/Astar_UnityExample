@@ -452,4 +452,4 @@ MonoBehaviour:
   rootGrid: {fileID: 168074, guid: 66c26455c3d3555478dfb1ee0e4b4e74, type: 3}
   barrierPrefab: {fileID: 7181502163470971398, guid: 8fe8f399925470b44abe51c0b0e18ee7,
     type: 3}
-  moveType: 1
+  moveType: 0
