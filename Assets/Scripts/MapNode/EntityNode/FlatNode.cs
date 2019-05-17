@@ -31,7 +31,6 @@ public class FlatNode : MapGridNode
             }
         }
     }
-
     public bool isBegin
     {
         set

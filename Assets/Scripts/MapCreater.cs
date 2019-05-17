@@ -14,9 +14,7 @@ public class MapCreater : MonoBehaviour
     public MoveType moveType = MoveType.four;
     #endregion
 
-    //地图数据
     private MapInfo mapInfo = new MapInfo();
-
     public FlatNode beginNode { get; set; } = null;
     public bool initMap { get; set; } = false;
 
@@ -31,14 +29,6 @@ public class MapCreater : MonoBehaviour
 
         return instance;
     }
-    public MapInfo GetMapInfo()
-    {
-        if (initMap)
-        {
-            return mapInfo;
-        }
-        return null;
-    }
 
     void Awake()
     {
@@ -50,21 +40,26 @@ public class MapCreater : MonoBehaviour
         InitCameraPos();
     }
 
+    public MapInfo GetMapInfo()
+    {
+        if (initMap)
+        {
+            return mapInfo;
+        }
+        return null;
+    }
     void InitCameraPos()
     {
         Camera.main.transform.position = mapInfo.GetNodeByCoord((int)Mathf.Floor(mapLength / 2), (int)Mathf.Floor(mapWith / 2)).pos + new Vector3(0,100,0);
     }
-    //初始化地图信息
     void InitMapInfo()
     {
-
         CreatMap();
         RandomCreatBarrierAndBeginNode();
-
         initMap = true;
+
         Debug.Log("地图生成成功！");
     }
-    //生成地图
     void CreatMap()
     {
         mapInfo.SetMapData(mapWith, mapLength, moveType);
@@ -83,7 +78,6 @@ public class MapCreater : MonoBehaviour
             }
         }
     }
-    //随机生成障碍物和起点
     void RandomCreatBarrierAndBeginNode()
     {
         if (barrierCount > this.transform.childCount)

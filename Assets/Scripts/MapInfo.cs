@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using System.Collections.Generic;
 
 public enum MoveType
 {
@@ -13,6 +8,9 @@ public enum MoveType
 
 public class MapInfo
 {
+    //索引表
+    private MapGridNode[,] mapGridCoordIndexArray;
+
     public int mapWith { get; set; }
     public int mapLength { get; set; }
     public MoveType moveType = MoveType.four;
@@ -20,10 +18,6 @@ public class MapInfo
     public List<MapGridNode> mapGridNodeList = new List<MapGridNode>();
     public int nodeCount { get { return mapGridNodeList.Count; } }
 
-    //索引表
-    private MapGridNode[,] mapGridCoordIndexArray;
-
-    //设置地图长宽
     public void SetMapData(int maxWith, int maxlength, MoveType type)
     {
         mapWith = maxWith;
@@ -31,7 +25,6 @@ public class MapInfo
         moveType = type;
         mapGridCoordIndexArray = new MapGridNode[maxWith + 1, maxlength + 1];
     }
-    //新增节点
     public void AddNode(int x, int y, MapGridNode node)
     {  
         //索引表
@@ -39,7 +32,6 @@ public class MapInfo
         //原表
         mapGridNodeList.Add(node);
     }
-    //改变节点
     public void ChangeNode(int x,int y, MapGridNode node, int index)
     {  
         mapGridCoordIndexArray[x, y] = node;
@@ -67,7 +59,6 @@ public class MapInfo
         string[] nameArray = name.Split('_');
         return GetNodeByCoord(int.Parse(nameArray[0]), int.Parse(nameArray[1]));
     }
-
     public void CleanShowPath()
     {
         foreach(var node in mapGridNodeList)

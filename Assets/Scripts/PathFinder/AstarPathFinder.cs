@@ -20,7 +20,6 @@ public class AstarPathFinder
         endNode = targetMapPathFindData[end.coordx, end.coordy];
         findResultCallback = callback;
     }
-
     public void FindPath()
     {        
         //要检索的点
@@ -91,7 +90,7 @@ public class AstarPathFinder
         CompleteHandler();
     }
 
-    //
+    //根据地图数据，生成寻路信息
     private AstarNode[,] CreatPathFindData(MapInfo mapInfo)
     {
         AstarNode[,] targetMapPathFindData = new AstarNode[mapInfo.mapLength + 1, mapInfo.mapWith + 1];
@@ -104,7 +103,6 @@ public class AstarPathFinder
 
         return targetMapPathFindData;
     }
-
     //从检测的终点，回溯到起点，构成寻路结果
     private List<AstarNode> RecallPath(AstarNode beginNode, AstarNode currentNode)
     {
