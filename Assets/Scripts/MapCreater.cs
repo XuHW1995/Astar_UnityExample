@@ -14,6 +14,8 @@ public class MapCreater : MonoBehaviour
     private MapInfo mapInfo = new MapInfo();
     private FlatNode beginNode = null;
 
+    private bool initMap = false;
+
     private static MapCreater instance = null;
     public static MapCreater GetInstance()
     {
@@ -32,22 +34,33 @@ public class MapCreater : MonoBehaviour
     void Start()
     {
         InitMapInfo();
+        InitCameraPos();
     }
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (initMap)
         {
-            RaycastHit hitInfo;
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hitInfo, 100))
+            if (Input.GetMouseButtonDown(0))
             {
-                //TODO 寻路请求
-                MapGridNode end = mapInfo.GetNodeByName(hitInfo.transform.name);
-                PathFindMgr.RequestPathFind(beginNode, end, mapInfo, FindComplete);
-                Debug.Log("终点是：" + hitInfo.transform.name);
+                RaycastHit hitInfo;
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                if (Physics.Raycast(ray, out hitInfo, 100))
+                {
+                    if (hitInfo.transform.name != "barrier(Clone)")
+                    {
+                        MapGridNode end = mapInfo.GetNodeByName(hitInfo.transform.name);
+                        PathFindMgr.RequestPathFind(beginNode, end, mapInfo, FindComplete);
+                        Debug.Log("终点是：" + hitInfo.transform.name);
+                    }
+                }
             }
-        }   
+        }
+    }
+
+    void InitCameraPos()
+    {
+        Camera.main.transform.position = mapInfo.GetNodeByCoord((int)Mathf.Floor(mapLength / 2), (int)Mathf.Floor(mapWith / 2)).pos + new Vector3(0,100,0);
     }
 
     void FindComplete(List<AstarNode> foundPath)
@@ -65,6 +78,9 @@ public class MapCreater : MonoBehaviour
     {
         CreatMap();
         RandomCreatBarrierAndBeginNode();
+
+        initMap = true;
+        Debug.Log("地图生成成功！");
     }
     //生成地图
     void CreatMap()

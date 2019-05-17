@@ -162,7 +162,8 @@ public class AstarPathFinder
         int distX = Math.Abs(firstNode.mapGridNode.coordx - lastNode.mapGridNode.coordx);
         int distY = Math.Abs(firstNode.mapGridNode.coordy - lastNode.mapGridNode.coordy);
 
-        return 14 * distX + 10 * distY;
+        //return 14 * distX + 10 * distY;
+        return  distX + distY;
     }
     void CompleteHandler()
     {

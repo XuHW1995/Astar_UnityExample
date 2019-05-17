@@ -260,11 +260,11 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
+  near clip plane: 10
   far clip plane: 1000
   field of view: 59.89886
-  orthographic: 0
-  orthographic size: 5
+  orthographic: 1
+  orthographic size: 50
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -403,9 +403,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf46f86b7d2133340b23d04a32c40c85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mapWith: 10
-  mapLength: 10
+  mapWith: 100
+  mapLength: 100
+  barrierCount: 2000
   rootGrid: {fileID: 168074, guid: 66c26455c3d3555478dfb1ee0e4b4e74, type: 3}
   barrierPrefab: {fileID: 7181502163470971398, guid: 8fe8f399925470b44abe51c0b0e18ee7,
     type: 3}
-  barrierCount: 5

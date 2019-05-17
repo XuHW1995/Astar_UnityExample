@@ -16,7 +16,7 @@ public class MapInfo
 {
     public int mapWith { get; set; }
     public int mapLength { get; set; }
-    public MoveType moveType = MoveType.eight;
+    public MoveType moveType = MoveType.four;
 
     //实体节点列表
     public List<MapGridNode> mapGridNodeList = new List<MapGridNode>();
