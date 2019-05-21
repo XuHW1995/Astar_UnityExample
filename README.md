@@ -1,4 +1,4 @@
-# Astar_UnityExample
+# Astar for Unity
 A星算法untiy练习实现
 
 在一个目标地图内，鼠标左键点击地图上某一点，角色自动按照指定路线移动  
